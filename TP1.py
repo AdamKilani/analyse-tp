@@ -90,6 +90,42 @@ plt.plot()
 plt.figure()
 plt.show()
 #2
-plt.scatter(matrice[:0],matrice2[:1])
+
+
+# Extraire la longueur (colonne 0) et la largeur (colonne 1)
+longueur = data[:, 0]
+largeur = data[:, 1]
+
+# Tracer la largeur en fonction de la longueur
+plt.scatter(longueur, largeur, color='blue', label='Données brutes')
+plt.xlabel('Longueur du nez (mm)')
+plt.ylabel('Largeur du nez (mm)')
+plt.title('Largeur en fonction de la longueur du nez des kangourous')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+#3 
+# Calculer la régression linéaire (degré 1)
+coefficients = np.polyfit(longueur, largeur, 1)
+
+# Afficher les coefficients
+print(f"Coefficients de la régression linéaire: {coefficients}")
+
+#4
+# Calculer les valeurs prédites par la régression linéaire
+largeur_predite = np.polyval(coefficients, longueur)
+
+# Tracer les données brutes et la droite de régression
+plt.scatter(longueur, largeur, color='blue', label='Données brutes')
+plt.plot(longueur, largeur_predite, color='red', label='Régression linéaire')
+plt.xlabel('Longueur du nez (mm)')
+plt.ylabel('Largeur du nez (mm)')
+plt.title('Régression linéaire sur les données des kangourous')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
 
 
