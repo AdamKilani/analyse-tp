@@ -105,3 +105,67 @@ print(f"MSE (degré 4) : {mse_deg4}")
 
 
 #exercice2 :
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --------------------------------------------
+# 1. Lecture des données depuis le fichier .txt
+# --------------------------------------------
+# Supposons que le fichier 'kangourous.txt' contient deux colonnes X et Y
+data = np.loadtxt('kangourous.txt')  # Charge les données dans un array (n, 2)
+Kc = data.T  # Transpose pour obtenir une matrice de shape (2, n)
+
+# --------------------------------------------
+# 2. Régression linéaire
+# --------------------------------------------
+a, b = np.polyfit(Kc[0], Kc[1], 1)  # Coefficients de la droite
+x_rc = np.linspace(0, 900, 901)  # Points pour évaluer la droite
+y_rc = a * x_rc + b  # Valeurs de la droite de régression
+
+# --------------------------------------------
+# 3. Matrice de covariance
+# --------------------------------------------
+C = np.cov(Kc)  # Matrice de covariance (2, 2)
+
+# --------------------------------------------
+# 4. Décomposition en valeurs propres
+# --------------------------------------------
+valeurs_propres, P = np.linalg.eig(C)  # Vecteurs propres et valeurs propres
+D = np.diag(valeurs_propres)  # Matrice diagonale des valeurs propres
+
+# --------------------------------------------
+# 5. Données transformées dans la base des vecteurs propres
+# --------------------------------------------
+Kvp = np.linalg.inv(P) @ Kc  # Transformation des données
+
+# --------------------------------------------
+# 6. Régression linéaire dans la nouvelle base
+# --------------------------------------------
+a_vp, b_vp = np.polyfit(Kvp[0], Kvp[1], 1)  # Régression dans la nouvelle base
+x_vp = np.linspace(Kvp[0].min(), Kvp[0].max(), 100)  # Points pour la droite
+y_vp = a_vp * x_vp + b_vp  # Valeurs de la droite de régression
+
+# --------------------------------------------
+# 7. Affichage final
+# --------------------------------------------
+plt.figure(figsize=(12, 6))
+
+# Sous-figure originale
+plt.subplot(121)
+plt.scatter(Kc[0], Kc[1], label="Données originales")
+plt.plot(x_rc, y_rc, "r", label="Régression linéaire")
+plt.title("Base originale")
+plt.xticks(np.arange(500, 1001, 50))  # Ticks de 500 à 1000 par pas de 50
+plt.xlim(500, 1000)
+plt.legend()
+
+# Sous-figure transformée
+plt.subplot(122)
+plt.scatter(Kvp[0], Kvp[1], label="Données transformées")
+plt.plot(x_vp, y_vp, "r", label="Régression VP")
+plt.title("Base des vecteurs propres")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
